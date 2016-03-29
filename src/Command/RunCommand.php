@@ -13,8 +13,9 @@ use Symfony\Component\Console\Question\Question;
 class RunCommand extends Command {
   protected function configure() {
     $this->setName('pr-report')
-      ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'Configuration file)')
-      ->addOption('cred', NULL, InputOption::VALUE_REQUIRED, 'Credentials file)')
+      ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'Configuration file')
+      ->addOption('cred', NULL, InputOption::VALUE_REQUIRED, 'Credentials file')
+      ->addOption('format', NULL, InputOption::VALUE_REQUIRED, 'Output format (json,csv,html)', 'csv')
       ->addOption('no-checkout', NULL, InputOption::VALUE_NONE, 'Skip git checkout');
   }
 
@@ -45,16 +46,58 @@ class RunCommand extends Command {
           /** @var \GithubPull $pull */
           $rows[] = array(
             'id' => "{$repo->id} #{$pull->getNumber()}",
+            'url' => $pull->getHtmlUrl(),
+            'title' => $pull->getTitle(),
+            'author' => $pull->getUser()->getLogin(),
             'state' => $pull->getState(),
             'merged' => $pull->getMergedAt() ? 1 : 0,
-            'title' => $pull->getTitle(),
-            'url' => $pull->getHtmlUrl(),
           );
         }
       }
     }
 
-    print_r($rows);
+    switch ($input->getOption('format')) {
+      case 'json':
+        $opt = defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0;
+        $output->write(json_encode($rows, $opt));
+        break;
+
+      case 'csv':
+        fputcsv(STDOUT, array('id', 'url', 'title', 'author', 'state', 'merged'));
+        foreach ($rows as $row) {
+          fputcsv(STDOUT, array(
+            $row['id'],
+            $row['url'],
+            $row['title'],
+            $row['author'],
+            $row['state'],
+            $row['merged']
+          ));
+        }
+        break;
+
+      case 'html':
+        $output->writeln("<html><body><table>");
+        $output->writeln("<thead>");
+        $output->writeln("<tr><td>ID</td><td>Title</td><td>Author</td><td>State</td></tr>");
+        $output->writeln("</thead><tbody>");
+        foreach ($rows as $row) {
+          $output->writeln(sprintf("<tr><td><a href=\"%s\">%s</a></td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td></tr>",
+              $row['url'],
+              $row['id'],
+              $row['url'],
+              $row['title'],
+              $row['author'],
+              $row['state'] . ($row['merged'] == 1 ? ' (merged)' : ''))
+          );
+        }
+        $output->writeln("</tbody>");
+        $output->writeln("</table></body></html>");
+        break;
+
+      default:
+        throw new \RuntimeException("Unrecognized format: " . $input->getOption('format'));
+    }
   }
 
   /**
