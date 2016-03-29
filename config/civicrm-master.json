@@ -14,49 +14,49 @@
   ],
   "repos": [
     {
-      "title": "civicrm-core",
+      "id": "civicrm-core",
       "owner": "civicrm",
       "repo": "civicrm-core",
       "baseBranch": "@@BRANCH@@",
       "lastTag": "@@LAST@@"
     },
     {
-      "title": "civicrm-packages",
+      "id": "civicrm-packages",
       "owner": "civicrm",
       "repo": "civicrm-packages",
       "baseBranch": "@@BRANCH@@",
       "lastTag": "@@LAST@@"
     },
     {
-      "title": "civicrm-backdrop@1.x",
+      "id": "civicrm-backdrop@1.x",
       "owner": "civicrm",
       "repo": "civicrm-backdrop",
       "baseBranch": "1.x-@@BRANCH@@",
       "lastTag": "1.x-@@LAST@@"
     },
     {
-      "title": "civicrm-drupal@7.x",
+      "id": "civicrm-drupal@7.x",
       "owner": "civicrm",
       "repo": "civicrm-drupal",
       "baseBranch": "7.x-@@BRANCH@@",
       "lastTag": "7.x-@@LAST@@"
     },
     {
-      "title": "civicrm-drupal@8.x",
+      "id": "civicrm-drupal@8.x",
       "owner": "civicrm",
       "repo": "civicrm-drupal",
       "baseBranch": "8.x-@@BRANCH@@",
       "lastTag": "8.x-@@LAST@@"
     },
     {
-      "title": "civicrm-joomla",
+      "id": "civicrm-joomla",
       "owner": "civicrm",
       "repo": "civicrm-joomla",
       "baseBranch": "@@BRANCH@@",
       "lastTag": "@@LAST@@"
     },
     {
-      "title": "civicrm-wordpress",
+      "id": "civicrm-wordpress",
       "owner": "civicrm",
       "repo": "civicrm-wordpress",
       "baseBranch": "@@BRANCH@@",

@@ -10,9 +10,8 @@ class Repo {
 
   /**
    * @var string
-   *   Printable label for this repo
    */
-  public $title;
+  public $id;
 
   /**
    * @var string
@@ -52,7 +51,7 @@ class Repo {
    */
   public function __construct($config, $repoConfig) {
     $this->config = $config;
-    $this->title = @$repoConfig['title'];
+    $this->id = @$repoConfig['id'];
     $this->owner = @$repoConfig['owner'];
     $this->repo = @$repoConfig['repo'];
     $this->baseBranch = @$repoConfig['baseBranch'];
@@ -67,7 +66,7 @@ class Repo {
 
   public function validate() {
     return
-      !empty($this->title)
+      !empty($this->id)
       && !empty($this->owner)
       && !empty($this->repo)
       && !empty($this->baseBranch)

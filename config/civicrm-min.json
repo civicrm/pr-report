@@ -14,7 +14,7 @@
   ],
   "repos": [
     {
-      "title": "civicrm-core",
+      "id": "civicrm-core",
       "owner": "civicrm",
       "repo": "civicrm-core",
       "baseBranch": "@@BRANCH@@",
