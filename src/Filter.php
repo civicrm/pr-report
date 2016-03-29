@@ -29,7 +29,7 @@ class Filter {
   public function findPullRequests(\GitHubClient $client, Repo $repo) {
     $filter = $this;
 
-    $pulls = $client->pulls->listPullRequests($repo->owner, $repo->repo, $filter->state, NULL, $repo->branch);
+    $pulls = $client->pulls->listPullRequests($repo->owner, $repo->repo, $filter->state, NULL, $repo->baseBranch);
 
     if ($filter->recentlyMerged) {
       $pulls = array_filter($pulls,
@@ -39,7 +39,7 @@ class Filter {
             return FALSE;
           }
           // Merged into a previous release?
-          return !$repo->checkTagContains($repo->last, $pull->getHead()->getSha());
+          return !$repo->checkTagContains($repo->lastTag, $pull->getHead()->getSha());
         }
       );
     }

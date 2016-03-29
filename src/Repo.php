@@ -30,14 +30,14 @@ class Repo {
    * @var string
    *   Branch name. We'll check this branch for open PRs and recent changes.
    */
-  public $branch;
+  public $baseBranch;
 
   /**
    * @var string
    *   Branch/tag/commitish. The last release against which we should compare.
    *   Any past PRs already handled by $last should be ignored.
    */
-  public $last;
+  public $lastTag;
 
   /**
    * @var string
@@ -55,13 +55,13 @@ class Repo {
     $this->title = @$repoConfig['title'];
     $this->owner = @$repoConfig['owner'];
     $this->repo = @$repoConfig['repo'];
-    $this->branch = @$repoConfig['head'];
-    $this->last = @$repoConfig['last'];
+    $this->baseBranch = @$repoConfig['baseBranch'];
+    $this->lastTag = @$repoConfig['lastTag'];
     $this->localDir = implode(DIRECTORY_SEPARATOR, array(
       $config->cacheDir,
       $this->owner,
       $this->repo,
-      $this->branch,
+      $this->baseBranch,
     ));
   }
 
@@ -70,13 +70,13 @@ class Repo {
       !empty($this->title)
       && !empty($this->owner)
       && !empty($this->repo)
-      && !empty($this->branch)
-      && !empty($this->last)
+      && !empty($this->baseBranch)
+      && !empty($this->lastTag)
       // eh, whatever: && preg_match('/^[a-zA-Z0-9\-_\.]+$/', $this->title)
       && preg_match('/^[a-zA-Z0-9\-_\.]+$/', $this->owner)
       && preg_match('/^[a-zA-Z0-9\-_\.]+$/', $this->repo)
-      && preg_match('/^[a-zA-Z0-9\-_\.]+$/', $this->branch)
-      && preg_match('/^[a-zA-Z0-9\-_\.]+$/', $this->last);
+      && preg_match('/^[a-zA-Z0-9\-_\.]+$/', $this->baseBranch)
+      && preg_match('/^[a-zA-Z0-9\-_\.]+$/', $this->lastTag);
   }
 
   /**
@@ -86,13 +86,13 @@ class Repo {
     if (!is_dir($this->localDir)) {
       $this->passthru('mkdir', '-p', dirname($this->localDir));
       $url = 'https://github.com/' . $this->owner . '/' . $this->repo;
-      $this->passthru('git', 'clone', $url, '-b', $this->branch, $this->localDir);
+      $this->passthru('git', 'clone', $url, '-b', $this->baseBranch, $this->localDir);
     }
     else {
       $oldDir = getcwd();
       chdir($this->localDir);
-      $this->passthru('git', 'checkout', $this->branch);
-      $this->passthru('git', 'pull', 'origin', $this->branch);
+      $this->passthru('git', 'checkout', $this->baseBranch);
+      $this->passthru('git', 'pull', 'origin', $this->baseBranch);
       chdir($oldDir);
     }
     return TRUE;

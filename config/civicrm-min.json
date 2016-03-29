@@ -1,4 +1,8 @@
 {
+  "vars": {
+    "@@BRANCH@@": "master",
+    "@@LAST@@": "4.7.4"
+  },
   "filters": [
     {
       "state": "open"
@@ -13,8 +17,8 @@
       "title": "civicrm-core",
       "owner": "civicrm",
       "repo": "civicrm-core",
-      "head": "master",
-      "last": "4.7.4"
+      "baseBranch": "@@BRANCH@@",
+      "lastTag": "@@LAST@@"
     }
   ]
 }
