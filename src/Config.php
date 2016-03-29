@@ -2,19 +2,24 @@
 namespace Civi\PrReport;
 
 class Config {
-  /** @var array */
+  /**
+   * @var array
+   */
   public $repos;
 
-  /** @var string */
+  /**
+   * @var array
+   */
+  public $filters;
+
+  /**
+   * @var string
+   */
   public $cacheDir;
 
-  /** @var boolean */
-  public $includeOpen;
-
-  /** @var boolean */
-  public $includeRecentlyMerged;
-
-  /** @var \GithubClient */
+  /**
+   * @var \GithubClient
+   */
   public $client;
 
   public function __construct() {
@@ -35,6 +40,22 @@ class Config {
       $repos[] = $repo;
     }
     return $repos;
+  }
+
+  /**
+   * @return array
+   *   Array<Filter>.
+   */
+  public function createFilters() {
+    $filters = array();
+    foreach ($this->filters as $key => $filterConfig) {
+      $filter = new Filter($this, $filterConfig);
+      if (!$filter->validate()) {
+        throw new \RuntimeException("Invalid Filter ($key): " . print_r($filterConfig, 1));
+      }
+      $filters[] = $filter;
+    }
+    return $filters;
   }
 
 }

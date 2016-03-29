@@ -2,6 +2,7 @@
 namespace Civi\PrReport\Command;
 
 use Civi\PrReport\Config;
+use Civi\PrReport\Filter;
 use Civi\PrReport\Repo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,6 +30,7 @@ class RunCommand extends Command {
     $config->client->setCredentials($cred['username'], $cred['password']);
 
     $repos = $config->createRepos();
+    $filters = $config->createFilters();
 
     $rows = array();
     foreach ($repos as $repo) {
@@ -37,14 +39,18 @@ class RunCommand extends Command {
         $repo->checkout();
       }
 
-      foreach ($repo->findPullRequests() as $pull) {
-        /** @var \GithubPull $pull */
-        $rows[] = array(
-          'id' => "{$repo->title} #{$pull->getNumber()}",
-          'state' => $pull->getState(),
-          'title' => $pull->getTitle(),
-          'url' => $pull->getHtmlUrl(),
-        );
+      foreach ($filters as $filter) {
+        /** @var Filter $filter */
+        foreach ($repo->findPullRequests($filter) as $pull) {
+          /** @var \GithubPull $pull */
+          $rows[] = array(
+            'id' => "{$repo->title} #{$pull->getNumber()}",
+            'state' => $pull->getState(),
+            'merged' => $pull->getMergedAt() ? 1 : 0,
+            'title' => $pull->getTitle(),
+            'url' => $pull->getHtmlUrl(),
+          );
+        }
       }
     }
 

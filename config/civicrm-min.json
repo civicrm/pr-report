@@ -1,6 +1,12 @@
 {
-  "includeOpen": false,
-  "includeRecentlyMerged": true,
+  "filters": [
+    {
+      "includeOpen": true
+    },
+    {
+      "includeRecentlyMerged": true
+    }
+  ],
   "repos": [
     {
       "title": "civicrm-core",

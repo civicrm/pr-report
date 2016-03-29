@@ -99,19 +99,20 @@ class Repo {
   }
 
   /**
+   * @param Filter $filter
    * @return array
    */
-  public function findPullRequests() {
+  public function findPullRequests(Filter $filter) {
     $repo = $this;
     $client = $this->config->client;
 
     $pulls = array();
-    if ($this->config->includeOpen) {
+    if ($filter->includeOpen){
       $openPrs = $client->pulls->listPullRequests($repo->owner, $repo->repo, 'open', NULL, $repo->branch);
       $pulls = array_merge($pulls, $openPrs);
     }
 
-    if ($this->config->includeRecentlyMerged) {
+    if ($filter->includeRecentlyMerged) {
       $closedPrs = $client->pulls->listPullRequests($repo->owner, $repo->repo, 'closed', NULL, $repo->branch);
       $pulls = array_merge($pulls, array_filter($closedPrs,
         function (\GithubPull $pull) use ($repo) {
