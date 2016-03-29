@@ -41,7 +41,7 @@ class RunCommand extends Command {
 
       foreach ($filters as $filter) {
         /** @var Filter $filter */
-        foreach ($repo->findPullRequests($filter) as $pull) {
+        foreach ($filter->findPullRequests($config->client, $repo) as $pull) {
           /** @var \GithubPull $pull */
           $rows[] = array(
             'id' => "{$repo->title} #{$pull->getNumber()}",

@@ -1,10 +1,11 @@
 {
   "filters": [
     {
-      "includeOpen": true
+      "state": "open"
     },
     {
-      "includeRecentlyMerged": true
+      "state": "closed",
+      "recentlyMerged": true
     }
   ],
   "repos": [

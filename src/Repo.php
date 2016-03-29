@@ -99,37 +99,6 @@ class Repo {
   }
 
   /**
-   * @param Filter $filter
-   * @return array
-   */
-  public function findPullRequests(Filter $filter) {
-    $repo = $this;
-    $client = $this->config->client;
-
-    $pulls = array();
-    if ($filter->includeOpen){
-      $openPrs = $client->pulls->listPullRequests($repo->owner, $repo->repo, 'open', NULL, $repo->branch);
-      $pulls = array_merge($pulls, $openPrs);
-    }
-
-    if ($filter->includeRecentlyMerged) {
-      $closedPrs = $client->pulls->listPullRequests($repo->owner, $repo->repo, 'closed', NULL, $repo->branch);
-      $pulls = array_merge($pulls, array_filter($closedPrs,
-        function (\GithubPull $pull) use ($repo) {
-          // Merged at all?
-          if (!$pull->getMergedAt()) {
-            return FALSE;
-          }
-          // Merged into a previous release?
-          return !$repo->checkTagContains($repo->last, $pull->getHead()->getSha());
-        }
-      ));
-    }
-
-    return $pulls;
-  }
-
-  /**
    * @param string $tag
    * @param string $sha
    * @return bool
