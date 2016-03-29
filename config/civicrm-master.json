@@ -1,0 +1,56 @@
+{
+  "includeOpen": true,
+  "includeMerged": false,
+  "includeRecentlyMerged": true,
+  "repos": [
+    {
+      "title": "civicrm-core",
+      "owner": "civicrm",
+      "repo": "civicrm-core",
+      "head": "master",
+      "last": "4.7.4"
+    },
+    {
+      "title": "civicrm-packages",
+      "owner": "civicrm",
+      "repo": "civicrm-packages",
+      "head": "master",
+      "last": "4.7.4"
+    },
+    {
+      "title": "civicrm-backdrop@1.x",
+      "owner": "civicrm",
+      "repo": "civicrm-backdrop",
+      "head": "1.x-master",
+      "last": "1.x-4.7.4"
+    },
+    {
+      "title": "civicrm-drupal@7.x",
+      "owner": "civicrm",
+      "repo": "civicrm-drupal",
+      "head": "7.x-master",
+      "last": "7.x-4.7.4"
+    },
+    {
+      "title": "civicrm-drupal@8.x",
+      "owner": "civicrm",
+      "repo": "civicrm-drupal",
+      "head": "8.x-master",
+      "last": "8.x-4.7.4"
+    },
+    {
+      "title": "civicrm-joomla",
+      "owner": "civicrm",
+      "repo": "civicrm-joomla",
+      "head": "master",
+      "last": "4.7.4"
+    },
+    {
+      "title": "civicrm-wordpress",
+      "owner": "civicrm",
+      "repo": "civicrm-wordpress",
+      "head": "master",
+      "last": "4.7.4"
+    }
+  ]
+}

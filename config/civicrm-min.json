@@ -1,0 +1,13 @@
+{
+  "includeOpen": false,
+  "includeRecentlyMerged": true,
+  "repos": [
+    {
+      "title": "civicrm-core",
+      "owner": "civicrm",
+      "repo": "civicrm-core",
+      "head": "master",
+      "last": "4.7.4"
+    }
+  ]
+}
