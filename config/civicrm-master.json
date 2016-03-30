@@ -12,6 +12,11 @@
       "recentlyMerged": true
     }
   ],
+  "issueCodes": {
+    "/^(CRM-[0-9]+)$/": "https://issues.civicrm.org/jira/browse/$1",
+    "/^(INFRA-[0-9]+)$/": "https://issues.civicrm.org/jira/browse/$1",
+    "/^(VOL-[0-9]+)$/": "https://issues.civicrm.org/jira/browse/$1"
+  },
   "repos": [
     {
       "id": "civicrm-core",

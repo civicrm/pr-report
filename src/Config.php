@@ -27,6 +27,8 @@ class Config {
    */
   public $vars = array();
 
+  public $issueCodes = array();
+
   public function __construct() {
     $this->cacheDir = sys_get_temp_dir() . '/pr-report';
   }
@@ -63,6 +65,13 @@ class Config {
       $filters[] = $filter;
     }
     return $filters;
+  }
+
+  /**
+   * @return \Civi\PrReport\IssueParser
+   */
+  public function createIssueParser() {
+    return new IssueParser($this->issueCodes);
   }
 
   protected function applyVars($array) {

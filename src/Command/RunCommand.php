@@ -32,6 +32,7 @@ class RunCommand extends Command {
 
     $repos = $config->createRepos();
     $filters = $config->createFilters();
+    $issueParser = $config->createIssueParser();
 
     $rows = array();
     foreach ($repos as $repo) {
@@ -51,6 +52,7 @@ class RunCommand extends Command {
             'author' => $pull->getUser()->getLogin(),
             'state' => $pull->getState(),
             'merged' => $pull->getMergedAt() ? 1 : 0,
+            'issues' => $issueParser->parse($pull->getTitle() . ' ' . $pull->getBody()),
           );
         }
       }
@@ -58,12 +60,23 @@ class RunCommand extends Command {
 
     switch ($input->getOption('format')) {
       case 'json':
-        $opt = defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0;
+        $opt
+          = (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0)
+          | defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0;
         $output->write(json_encode($rows, $opt));
         break;
 
       case 'csv':
-        fputcsv(STDOUT, array('id', 'url', 'title', 'author', 'state', 'merged'));
+        fputcsv(STDOUT, array(
+          'id',
+          'url',
+          'title',
+          'author',
+          'state',
+          'merged',
+          'issue-codes',
+          'issue-urls',
+        ));
         foreach ($rows as $row) {
           fputcsv(STDOUT, array(
             $row['id'],
@@ -71,7 +84,9 @@ class RunCommand extends Command {
             $row['title'],
             $row['author'],
             $row['state'],
-            $row['merged']
+            $row['merged'],
+            implode(' ', array_keys($row['issues'])),
+            implode(' ', $row['issues']),
           ));
         }
         break;
@@ -79,17 +94,20 @@ class RunCommand extends Command {
       case 'html':
         $output->writeln("<html><body><table>");
         $output->writeln("<thead>");
-        $output->writeln("<tr><td>ID</td><td>Title</td><td>Author</td><td>State</td></tr>");
+        $output->writeln("<tr><td>ID</td><td>Title</td><td>Author</td><td>State</td><td>Issue</td></tr>");
         $output->writeln("</thead><tbody>");
         foreach ($rows as $row) {
-          $output->writeln(sprintf("<tr><td><a href=\"%s\">%s</a></td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td></tr>",
-              $row['url'],
-              $row['id'],
-              $row['url'],
-              $row['title'],
-              $row['author'],
-              $row['state'] . ($row['merged'] == 1 ? ' (merged)' : ''))
-          );
+          $issueLinks = array();
+          foreach ($row['issues'] as $issue => $url) {
+            $issueLinks[] = sprintf("<a href=\"%s\">%s</a>", $url, $issue);
+          }
+          $output->writeln(sprintf("<tr><td><a href=\"%s\">%s</a></td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td><td>%s</td></tr>",
+            $row['url'], $row['id'],
+            $row['url'], $row['title'],
+            $row['author'],
+            $row['state'] . ($row['merged'] == 1 ? ' (merged)' : ''),
+            '' . implode(', ', $issueLinks)
+          ));
         }
         $output->writeln("</tbody>");
         $output->writeln("</table></body></html>");
