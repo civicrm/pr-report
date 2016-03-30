@@ -18,11 +18,6 @@ class Config {
   public $cacheDir;
 
   /**
-   * @var \GithubClient
-   */
-  public $client;
-
-  /**
    * @var array
    */
   public $vars = array();

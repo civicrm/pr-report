@@ -5,11 +5,15 @@
   },
   "filters": [
     {
-      "state": "open"
+      "state": "open",
+      "pageSize": 100,
+      "maxPages": 15
     },
     {
       "state": "closed",
-      "recentlyMerged": true
+      "recentlyMerged": true,
+      "pageSize": 100,
+      "maxPages": 15
     }
   ],
   "issueCodes": {

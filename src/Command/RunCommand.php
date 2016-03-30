@@ -34,9 +34,6 @@ class RunCommand extends Command {
 
     /** @var Config $config */
     $config = $this->parseConfig($input);
-    $config->client = new \GitHubClient();
-    $config->client->setCredentials($cred['username'], $cred['password']);
-
     $repos = $config->createRepos();
     $filters = $config->createFilters();
     $issueParser = $config->createIssueParser();
@@ -49,8 +46,11 @@ class RunCommand extends Command {
       }
 
       foreach ($filters as $filter) {
+        $client = new \GitHubClient();
+        $client->setCredentials($cred['username'], $cred['password']);
+
         /** @var Filter $filter */
-        foreach ($filter->findPullRequests($config->client, $repo) as $pull) {
+        foreach ($filter->findPullRequests($client, $repo) as $pull) {
           /** @var \GithubPull $pull */
           $rows[] = array(
             'id' => "{$repo->id} #{$pull->getNumber()}",
@@ -137,7 +137,7 @@ class RunCommand extends Command {
   protected function writeJson($file, $rows) {
     $opt
       = (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0)
-    | defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0;
+    | (defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0);
     file_put_contents($file, json_encode($rows, $opt));
   }
 
