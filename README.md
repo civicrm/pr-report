@@ -12,8 +12,10 @@ composer install
 
 ## Usage
 
-1. Create a configuration file (e.g. `config/civicrm-master.json`)
-2. Run `pr-report` and pass in the config file, e.g.
+1. Find or a configuration file (e.g. `config/civicrm-master.json`)
+2. Run `pr-report`. Pass in the config file (`-f`) and specify an output file (`--html` or `--json` or `--csv`).
+
+For example:
 
 ```bash
 ./bin/pr-report -f config/civicrm-master.json --html=civicrm-master-report.html
