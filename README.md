@@ -16,5 +16,10 @@ composer install
 2. Run `pr-report` and pass in the config file, e.g.
 
 ```bash
-./bin/pr-report -f config/civicrm-master.json
+./bin/pr-report -f config/civicrm-master.json --html=civicrm-master-report.html
+
+./bin/pr-report -f config/civicrm-master.json \
+  --html=civicrm-master-report.html \
+  --json=civicrm-master-report.json \
+  --csv=civicrm-master-report.csv
 ```

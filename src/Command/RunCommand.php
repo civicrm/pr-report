@@ -15,11 +15,18 @@ class RunCommand extends Command {
     $this->setName('pr-report')
       ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'Configuration file')
       ->addOption('cred', NULL, InputOption::VALUE_REQUIRED, 'Credentials file')
-      ->addOption('format', NULL, InputOption::VALUE_REQUIRED, 'Output format (json,csv,html)', 'csv')
+      ->addOption('csv', NULL, InputOption::VALUE_REQUIRED, 'Output CSV file')
+      ->addOption('json', NULL, InputOption::VALUE_REQUIRED, 'Output JSON file')
+      ->addOption('html', NULL, InputOption::VALUE_REQUIRED, 'Output HTML file')
       ->addOption('no-checkout', NULL, InputOption::VALUE_NONE, 'Skip git checkout');
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    if (!$input->getOption('csv') && !$input->getOption('html') && !$input->getOption('json')) {
+      $output->writeln("<error>Expected at least one of these options: \"--csv=[file]\", \"--html=[file]\", or \"--json=[file]\"</error>");
+      return 1;
+    }
+
     $cred = $this->parseCredentials($input, $output);
     if ($cred === NULL) {
       return 1;
@@ -57,64 +64,16 @@ class RunCommand extends Command {
         }
       }
     }
+    if ($input->getOption('json')) {
+      $this->writeJson($input->getOption('json'), $rows);
+    }
 
-    switch ($input->getOption('format')) {
-      case 'json':
-        $opt
-          = (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0)
-          | defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0;
-        $output->write(json_encode($rows, $opt));
-        break;
+    if ($input->getOption('csv')) {
+      $this->writeCsv($input->getOption('csv'), $rows);
+    }
 
-      case 'csv':
-        fputcsv(STDOUT, array(
-          'id',
-          'url',
-          'title',
-          'author',
-          'state',
-          'merged',
-          'issue-codes',
-          'issue-urls',
-        ));
-        foreach ($rows as $row) {
-          fputcsv(STDOUT, array(
-            $row['id'],
-            $row['url'],
-            $row['title'],
-            $row['author'],
-            $row['state'],
-            $row['merged'],
-            implode(' ', array_keys($row['issues'])),
-            implode(' ', $row['issues']),
-          ));
-        }
-        break;
-
-      case 'html':
-        $output->writeln("<html><body><table>");
-        $output->writeln("<thead>");
-        $output->writeln("<tr><td>ID</td><td>Title</td><td>Author</td><td>State</td><td>Issue</td></tr>");
-        $output->writeln("</thead><tbody>");
-        foreach ($rows as $row) {
-          $issueLinks = array();
-          foreach ($row['issues'] as $issue => $url) {
-            $issueLinks[] = sprintf("<a href=\"%s\">%s</a>", $url, $issue);
-          }
-          $output->writeln(sprintf("<tr><td><a href=\"%s\">%s</a></td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td><td>%s</td></tr>",
-            $row['url'], $row['id'],
-            $row['url'], $row['title'],
-            $row['author'],
-            $row['state'] . ($row['merged'] == 1 ? ' (merged)' : ''),
-            '' . implode(', ', $issueLinks)
-          ));
-        }
-        $output->writeln("</tbody>");
-        $output->writeln("</table></body></html>");
-        break;
-
-      default:
-        throw new \RuntimeException("Unrecognized format: " . $input->getOption('format'));
+    if ($input->getOption('html')) {
+      $this->writeHtml($input->getOption('html'), $rows);
     }
   }
 
@@ -169,6 +128,78 @@ class RunCommand extends Command {
     }
 
     return $config;
+  }
+
+  /**
+   * @param $file
+   * @param $rows
+   */
+  protected function writeJson($file, $rows) {
+    $opt
+      = (defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0)
+    | defined('JSON_UNESCAPED_SLASHES') ? JSON_UNESCAPED_SLASHES : 0;
+    file_put_contents($file, json_encode($rows, $opt));
+  }
+
+  /**
+   * @param $rows
+   */
+  protected function writeCsv($file, $rows) {
+    $fh = fopen($file, "w");
+    if (!$fh) {
+      throw new \RuntimeException("Failed to open $file");
+    }
+    fputcsv($fh, array(
+      'id',
+      'url',
+      'title',
+      'author',
+      'state',
+      'merged',
+      'issue-codes',
+      'issue-urls',
+    ));
+    foreach ($rows as $row) {
+      fputcsv($fh, array(
+        $row['id'],
+        $row['url'],
+        $row['title'],
+        $row['author'],
+        $row['state'],
+        $row['merged'],
+        implode(' ', array_keys($row['issues'])),
+        implode(' ', $row['issues']),
+      ));
+    }
+    fclose($fh);
+  }
+
+  /**
+   * @param $file
+   * @param $rows
+   */
+  protected function writeHtml($file, $rows) {
+    $buf = '';
+    $buf .= "<html><body><table>\n";
+    $buf .= "<thead>\n";
+    $buf .= "<tr><td>ID</td><td>Title</td><td>Author</td><td>State</td><td>Issue</td></tr>\n";
+    $buf .= "</thead><tbody>\n";
+    foreach ($rows as $row) {
+      $issueLinks = array();
+      foreach ($row['issues'] as $issue => $url) {
+        $issueLinks[] = sprintf("<a href=\"%s\">%s</a>", $url, $issue);
+      }
+      $buf .= (sprintf("<tr><td><a href=\"%s\">%s</a></td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td><td>%s</td></tr>",
+        $row['url'], $row['id'],
+        $row['url'], $row['title'],
+        $row['author'],
+        $row['state'] . ($row['merged'] == 1 ? ' (merged)' : ''),
+        '' . implode(', ', $issueLinks)
+      ));
+    }
+    $buf .= "</tbody>\n";
+    $buf .= "</table></body></html>\n";
+    file_put_contents($file, $buf);
   }
 
 }
