@@ -5,7 +5,7 @@ Generate a report about recent and open PRs across multiple repos.
 ## Download
 
 ```bash
-git clone https://github.com/totten/pr-report
+git clone https://github.com/civicrm/pr-report
 cd pr-report
 composer install
 ```

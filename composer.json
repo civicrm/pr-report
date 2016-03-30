@@ -1,5 +1,5 @@
 {
-    "name": "totten/pr-report",
+    "name": "civicrm/pr-report",
     "require": {
         "tan-tan-kanarek/github-php-client": "^1.0",
         "symfony/console": "^3.0",
@@ -13,8 +13,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Tim Otten",
-            "email": "totten@civicrm.org"
+            "name": "CiviCRM",
+            "email": "info@civicrm.org"
         }
     ]
 }
