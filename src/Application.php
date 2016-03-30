@@ -56,4 +56,5 @@ class Application extends \Symfony\Component\Console\Application {
 
     return $inputDefinition;
   }
+
 }
