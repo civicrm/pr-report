@@ -12,7 +12,7 @@ composer install
 
 ## Usage
 
-1. Find or a configuration file (e.g. `config/civicrm-all.json`)
+1. Find or create a configuration file (e.g. `config/civicrm-all.json`)
 2. Run `pr-report`. Pass in the config file (`-f`) and specify an output file (`--html` or `--json` or `--csv`).
 
 For example:
