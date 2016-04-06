@@ -82,7 +82,7 @@ class Repo {
    * @throws \RuntimeException
    */
   public function checkout() {
-    if (!is_dir($this->localDir)) {
+    if (!file_exists($this->localDir)) {
       $this->passthru('mkdir', '-p', dirname($this->localDir));
       $url = 'https://github.com/' . $this->owner . '/' . $this->repo;
       $this->passthru('git', 'clone', $url, '-b', $this->baseBranch, $this->localDir);
