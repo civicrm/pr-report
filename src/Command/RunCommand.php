@@ -15,6 +15,7 @@ class RunCommand extends Command {
     $this->setName('pr-report')
       ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'Configuration file')
       ->addOption('cred', NULL, InputOption::VALUE_REQUIRED, 'Credentials file')
+      ->addOption('out', NULL, InputOption::VALUE_REQUIRED, 'Output directory')
       ->addOption('csv', NULL, InputOption::VALUE_REQUIRED, 'Output CSV file')
       ->addOption('json', NULL, InputOption::VALUE_REQUIRED, 'Output JSON file')
       ->addOption('html', NULL, InputOption::VALUE_REQUIRED, 'Output HTML file')
@@ -63,6 +64,11 @@ class RunCommand extends Command {
           );
         }
       }
+    }
+    if ($input->getOption('dir')) {
+      $this->writeCsv($input->getOption('dir') . '/report.csv', $rows);
+      $this->writeHtml($input->getOption('dir') . '/report.html', $rows);
+      $this->writeJson($input->getOption('dir') . '/report.json', $rows);
     }
     if ($input->getOption('json')) {
       $this->writeJson($input->getOption('json'), $rows);
