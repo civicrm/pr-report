@@ -90,6 +90,7 @@ class Repo {
     else {
       $oldDir = getcwd();
       chdir($this->localDir);
+      $this->passthru('git', 'fetch', '--all');
       $this->passthru('git', 'checkout', $this->baseBranch);
       $this->passthru('git', 'pull', 'origin', $this->baseBranch);
       chdir($oldDir);
