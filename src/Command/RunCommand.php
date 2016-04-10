@@ -15,7 +15,7 @@ class RunCommand extends Command {
     $this->setName('pr-report')
       ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'Configuration file')
       ->addOption('cred', NULL, InputOption::VALUE_REQUIRED, 'Credentials file')
-      ->addOption('out', NULL, InputOption::VALUE_REQUIRED, 'Output directory')
+      ->addOption('out-dir', NULL, InputOption::VALUE_REQUIRED, 'Output directory')
       ->addOption('csv', NULL, InputOption::VALUE_REQUIRED, 'Output CSV file')
       ->addOption('json', NULL, InputOption::VALUE_REQUIRED, 'Output JSON file')
       ->addOption('html', NULL, InputOption::VALUE_REQUIRED, 'Output HTML file')
@@ -23,8 +23,8 @@ class RunCommand extends Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    if (!$input->getOption('csv') && !$input->getOption('html') && !$input->getOption('json')) {
-      $output->writeln("<error>Expected at least one of these options: \"--csv=[file]\", \"--html=[file]\", or \"--json=[file]\"</error>");
+    if (!$input->getOption('out-dir') && !$input->getOption('csv') && !$input->getOption('html') && !$input->getOption('json')) {
+      $output->writeln("<error>Expected at least one of these options: \"--out-dir=[dir]\", \"--csv=[file]\", \"--html=[file]\", or \"--json=[file]\"</error>");
       return 1;
     }
 
@@ -65,10 +65,10 @@ class RunCommand extends Command {
         }
       }
     }
-    if ($input->getOption('dir')) {
-      $this->writeCsv($input->getOption('dir') . '/report.csv', $rows);
-      $this->writeHtml($input->getOption('dir') . '/report.html', $rows);
-      $this->writeJson($input->getOption('dir') . '/report.json', $rows);
+    if ($input->getOption('out-dir')) {
+      $this->writeCsv($input->getOption('out-dir') . '/report.csv', $rows);
+      $this->writeHtml($input->getOption('out-dir') . '/report.html', $rows);
+      $this->writeJson($input->getOption('out-dir') . '/report.json', $rows);
     }
     if ($input->getOption('json')) {
       $this->writeJson($input->getOption('json'), $rows);
