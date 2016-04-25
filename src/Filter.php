@@ -55,13 +55,23 @@ class Filter {
 
       if ($filter->recentlyMerged) {
         $pulls = array_filter($pulls,
-          function (\GithubPull $pull) use ($repo) {
+          function (\GithubPull $pull) use ($repo, $client) {
             // Merged at all?
             if (!$pull->getMergedAt()) {
               return FALSE;
             }
             // Merged into a previous release?
-            return !$repo->checkTagContains($repo->lastTag, $pull->getHead()->getSha());
+            // We may have enough info from the listing to determine whether this was merged.
+            // However, if the PR history was flattened/rewritten during merge, then we may
+            // need to do an extra lookup.
+            try {
+              return !$repo->checkTagContains($repo->lastTag, $pull->getHead()->getSha());
+            } catch (\RuntimeException $e) {
+              $fullPull = $client->pulls->getSinglePullRequest($repo->owner, $repo->repo, $pull->getNumber());
+              printf("recheck pr #%s (lastTag=%s head-sha=%2 merge-sha=%s]\n",
+                $pull->getNumber(), $repo->lastTag, $pull->getHead()->getSha(), $fullPull->getMergeCommitSha());
+              return !$repo->checkTagContains($repo->lastTag, $fullPull->getMergeCommitSha());
+            }
           }
         );
       }
