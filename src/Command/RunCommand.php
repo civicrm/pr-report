@@ -28,6 +28,14 @@ class RunCommand extends Command {
       return 1;
     }
 
+    if ($input->getOption('out-dir')) {
+      $outdir = rtrim($input->getOption('out-dir'), '/');
+      if (!file_exists($outdir)) {
+        mkdir($outdir);
+      }
+      $outdir = realpath($outdir);
+    }
+
     $cred = $this->parseCredentials($input, $output);
     if ($cred === NULL) {
       return 1;
@@ -66,9 +74,9 @@ class RunCommand extends Command {
       }
     }
     if ($input->getOption('out-dir')) {
-      $this->writeCsv($input->getOption('out-dir') . '/report.csv', $rows);
-      $this->writeHtml($input->getOption('out-dir') . '/report.html', $rows);
-      $this->writeJson($input->getOption('out-dir') . '/report.json', $rows);
+      $this->writeCsv($outdir . '/report.csv', $rows);
+      $this->writeHtml($outdir . '/report.html', $rows);
+      $this->writeJson($outdir . '/report.json', $rows);
     }
     if ($input->getOption('json')) {
       $this->writeJson($input->getOption('json'), $rows);
