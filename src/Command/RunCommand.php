@@ -14,6 +14,7 @@ class RunCommand extends Command {
   protected function configure() {
     $this->setName('pr-report')
       ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'Configuration file')
+      ->addOption('define', 'd', InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Define variable(s)', array())
       ->addOption('cred', NULL, InputOption::VALUE_REQUIRED, 'Credentials file')
       ->addOption('out-dir', NULL, InputOption::VALUE_REQUIRED, 'Output directory')
       ->addOption('csv', NULL, InputOption::VALUE_REQUIRED, 'Output CSV file')
@@ -46,6 +47,10 @@ class RunCommand extends Command {
     $repos = $config->createRepos();
     $filters = $config->createFilters();
     $issueParser = $config->createIssueParser();
+
+    foreach ($config->vars as $k => $v) {
+      $output->writeln("VARIABLE: $k=<info>$v</info>");
+    }
 
     $rows = array();
     foreach ($repos as $repo) {
@@ -139,6 +144,11 @@ class RunCommand extends Command {
     $config = new Config();
     foreach ($configArr as $k => $v) {
       $config->{$k} = $v;
+    }
+
+    foreach ($input->getOption('define') as $kv) {
+      list ($key, $val) = explode('=', $kv, 2);
+      $config->vars[$key] = $val;
     }
 
     return $config;
