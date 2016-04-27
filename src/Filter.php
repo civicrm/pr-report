@@ -49,7 +49,7 @@ class Filter {
     do {
       $client->setPage(++$page);
       $client->setPageSize($pageSize);
-      echo "{$repo->repo} get pg={$page} ps=$pageSize\n";
+      echo "{$repo->repo} get pg={$page} ps=$pageSize st={$filter->state} bb={$repo->baseBranch}\n";
       $pulls = $client->pulls->listPullRequests($repo->owner, $repo->repo, $filter->state, NULL, $repo->baseBranch);
       $resultCount = count($pulls);
 
