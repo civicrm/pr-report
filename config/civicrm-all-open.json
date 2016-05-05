@@ -38,6 +38,13 @@
       "lastTag": "1.x-@@LAST@@"
     },
     {
+      "id": "drupal@6.x",
+      "owner": "civicrm",
+      "repo": "civicrm-drupal",
+      "baseBranch": "6.x-@@BRANCH@@",
+      "lastTag": "6.x-@@LAST@@"
+    },
+    {
       "id": "drupal@7.x",
       "owner": "civicrm",
       "repo": "civicrm-drupal",
