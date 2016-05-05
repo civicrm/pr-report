@@ -1,0 +1,78 @@
+{
+  "vars": {
+    "@@BRANCH@@": "master",
+    "@@LAST@@": "4.7.6",
+    "@@PAGES@@": "15"
+  },
+  "filters": [
+    {
+      "state": "closed",
+      "recentlyMerged": true,
+      "pageSize": 100,
+      "maxPages": "@@PAGES@@"
+    }
+  ],
+  "issueCodes": {
+    "/^(CRM-[0-9]+)$/": "https://issues.civicrm.org/jira/browse/$1",
+    "/^(INFRA-[0-9]+)$/": "https://issues.civicrm.org/jira/browse/$1",
+    "/^(VOL-[0-9]+)$/": "https://issues.civicrm.org/jira/browse/$1"
+  },
+  "repos": [
+    {
+      "id": "core",
+      "owner": "civicrm",
+      "repo": "civicrm-core",
+      "baseBranch": "@@BRANCH@@",
+      "lastTag": "@@LAST@@"
+    },
+    {
+      "id": "packages",
+      "owner": "civicrm",
+      "repo": "civicrm-packages",
+      "baseBranch": "@@BRANCH@@",
+      "lastTag": "@@LAST@@"
+    },
+    {
+      "id": "backdrop@1.x",
+      "owner": "civicrm",
+      "repo": "civicrm-backdrop",
+      "baseBranch": "1.x-@@BRANCH@@",
+      "lastTag": "1.x-@@LAST@@"
+    },
+    {
+      "id": "drupal@6.x",
+      "owner": "civicrm",
+      "repo": "civicrm-drupal",
+      "baseBranch": "6.x-@@BRANCH@@",
+      "lastTag": "6.x-@@LAST@@"
+    },
+    {
+      "id": "drupal@7.x",
+      "owner": "civicrm",
+      "repo": "civicrm-drupal",
+      "baseBranch": "7.x-@@BRANCH@@",
+      "lastTag": "7.x-@@LAST@@"
+    },
+    {
+      "id": "drupal@8.x",
+      "owner": "civicrm",
+      "repo": "civicrm-drupal",
+      "baseBranch": "8.x-@@BRANCH@@",
+      "lastTag": "8.x-@@LAST@@"
+    },
+    {
+      "id": "joomla",
+      "owner": "civicrm",
+      "repo": "civicrm-joomla",
+      "baseBranch": "@@BRANCH@@",
+      "lastTag": "@@LAST@@"
+    },
+    {
+      "id": "wordpress",
+      "owner": "civicrm",
+      "repo": "civicrm-wordpress",
+      "baseBranch": "@@BRANCH@@",
+      "lastTag": "@@LAST@@"
+    }
+  ]
+}
